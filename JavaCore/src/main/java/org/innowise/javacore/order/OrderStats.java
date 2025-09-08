@@ -5,7 +5,11 @@ import org.innowise.javacore.order.entity.Order;
 import org.innowise.javacore.order.entity.OrderItem;
 import org.innowise.javacore.order.enums.OrderStatus;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -15,15 +19,15 @@ public class OrderStats {
     public static List<String> getUniqueCities(List<Order> orders)
     {
         return orders.stream()
-                .map(o -> o.getCustomer().getCity())
+                .map(order -> order.getCustomer().getCity())
                 .distinct().toList();
     }
 
     public static double getSumForCompleted(List<Order> orders)
     {
-        return orders.stream().filter(o->o.getStatus()== OrderStatus.DELIVERED)
-                .mapToDouble(o->o.getItems().stream()
-                        .mapToDouble(i->i.getPrice()*i.getQuantity()).sum()).sum();
+        return orders.stream().filter(order->order.getStatus()== OrderStatus.DELIVERED)
+                .mapToDouble(order->order.getItems().stream()
+                        .mapToDouble(item->item.getPrice()*item.getQuantity()).sum()).sum();
     }
 
     public static String getMostPopularProduct(List<Order> orders)
@@ -37,20 +41,21 @@ public class OrderStats {
 
     public static double getAvgCheckForDelivered(List<Order> orders)
     {
-        long count = orders.stream().filter(o -> o.getStatus() == OrderStatus.DELIVERED)
+        long count = orders.stream().filter(order -> order.getStatus() == OrderStatus.DELIVERED)
                 .count();
-        if(count == 0)
+        if(count == 0) {
             return 0;
-        double sum = orders.stream().filter(o -> o.getStatus() == OrderStatus.DELIVERED)
-                .flatMap(o -> o.getItems().stream())
-                .mapToDouble(i -> i.getPrice() * i.getQuantity()).sum();
+        }
+        double sum = orders.stream().filter(order-> order.getStatus() == OrderStatus.DELIVERED)
+                .flatMap(order-> order.getItems().stream())
+                .mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
         return sum/count;
     }
 
     public static List<Customer> getCustomersWithMoreThan5Orders(List<Order> orders)
     {
         return orders.stream().collect(groupingBy(Order::getCustomer,Collectors.counting()))
-                .entrySet().stream().filter(e->e.getValue()>5)
+                .entrySet().stream().filter(entry->entry.getValue()>5)
                 .map(Map.Entry::getKey).toList();
     }
 }

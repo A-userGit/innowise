@@ -9,5 +9,6 @@ import org.innowise.javacore.skynet.enums.PartType;
 @Getter
 @AllArgsConstructor
 public class Part {
-    private PartType type;
+
+  private PartType type;
 }

@@ -6,13 +6,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ListNode<T> {
-    private T data;
-    private ListNode<T> previous;
-    private ListNode<T> next;
 
-    public ListNode(T element) {
-        data = element;
-    }
+  private T data;
+  private ListNode<T> previous;
+  private ListNode<T> next;
+
+  public ListNode(T element) {
+    data = element;
+  }
 
 
 }
